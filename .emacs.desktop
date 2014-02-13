@@ -1,0 +1,40 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Thu Feb 13 21:13:32 2014
+;; Desktop file format version 206
+;; Emacs version 23.3.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("split"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("~/xv6/" "/home/rahul/workspace/AI/ass2/server.cpp" "/home/rahul/workspace/AI/ass2/client.cpp" "~/workspace/AI/ass2/" "~/workspace/AI/Assi1/" "~/lab/" "~/lab" "~/lab/" "~/xv6/" "~/workspace/AI/Assi1/" "~/.emacs" "~/workspace/AI/Assi1/" "~/workspace/AI/Assi1/.emacs.desktop" "~/xv6/bootblock.asm" "~/xv6/bootmain.c" "~/xv6/bootasm.S" "~/xv6/bootasm.s" "~/.emacs" "~/lab/dev/" "~/lab/lib/" "~/lab/kern/.." "~/lab/kern/console.c" "~/lab/" "/usr/share/emacs/23.3/etc/TUT" "/usr/share/emacs/23.3/etc/foo" "/usr/share/emacs/23.3/etc/qq" "/usr/share/emacs/23.3/etc/Tuto" "/usr/share/emacs/23.3/etc/new" "~/workspace/Assignment6/testcases" "~/workspace/Assignment6/lambda1.ml"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/rahul/workspace/AI/ass2/client.cpp"
+  "client.cpp"
+  'c++-mode
+  '(abbrev-mode auto-complete-mode global-auto-revert-mode)
+  1794
+  '(611 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/rahul/workspace/AI/ass2/server.cpp"
+  "server.cpp"
+  'c++-mode
+  '(abbrev-mode auto-complete-mode global-auto-revert-mode)
+  850
+  '(749 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
