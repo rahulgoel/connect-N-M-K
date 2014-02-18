@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 	cout <<"Enter nmk"<<endl;
 	cin >> N>>M>>K;
 std::vector<std::string> a;
-a.push_back("......");
+a.push_back("XXXXX.");
 a.push_back("......");
 a.push_back("...X..");
 a.push_back("...OO.");
