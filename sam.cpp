@@ -44,7 +44,7 @@ double eval(vector<string> board)
 			if(j!=M-1)
 			{
 				for(;l_k < k; l_k++)
-		    		{
+		    		{	if(j+l_k < M)
 		        		if(board[i][j] != board[i][j + l_k])
 		            		break;
 		    		}
@@ -66,7 +66,7 @@ double eval(vector<string> board)
 			if(i!=N-1)
 			{
 				for(;l_k < k; l_k++)
-		    		{
+		    		{	if(i+l_k < N)
 		        		if(board[i][j] != board[i+l_k][j])
 		            		break;
 		    		}
@@ -96,7 +96,7 @@ double eval(vector<string> board)
 			if(j!=M-1)
 			{
 				for(;l_k < k; l_k++)
-		    		{
+		    		{	if(j+l_k < M)
 		        		if(board[i][j] != board[i][j + l_k])
 		            		break;
 		    		}
@@ -118,7 +118,7 @@ double eval(vector<string> board)
 			if(i!=N-1)
 			{
 				for(;l_k < k; l_k++)
-		    		{
+		    		{	if(i+l_k < N)
 		        		if(board[i][j] != board[i+l_k][j])
 		            		break;
 		    		}
@@ -151,4 +151,5 @@ a.push_back("......");
 	cout<<"Eval function-->"<<x<<endl;
 	return 0;
 }
+
 
