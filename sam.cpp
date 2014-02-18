@@ -29,78 +29,106 @@ double eval(vector<string> board)
 			int du1=0,dd1=0,down1=0,right1=0;
 			int l_k = 0;
 			//diagonally upwards
-			for(;l_k < k; l_k++)
+			if(i!=0 && j!=M-1)
 			{
-				if(board[i][j] != board[i-l_k][j+l_k])
-				break;
+				
+				for(;l_k < k; l_k++)
+				{	if(i-l_k > 0 && j+l_k < M)
+					if(board[i][j] != board[i-l_k][j+l_k])
+					break;
+				}
 			}
 			du1=l_k;
 			l_k=0;
 			//rightside
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i][j + l_k])
-                    		break;
-            		}
+			if(j!=M-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{
+		        		if(board[i][j] != board[i][j + l_k])
+		            		break;
+		    		}
+			}
 			right1=l_k;
 			l_k=0;
 			//diagonally downwards
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i+l_k][j + l_k])
-                    		break;
-            		}
+			if(i!=N-1 && j != M-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{	if(i+l_k < N && j+l_k < M)
+		        		if(board[i][j] != board[i+l_k][j + l_k])
+		            		break;
+		    		}
+			}
 			dd1=l_k;
 			l_k=0;
 			//downwards
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i+l_k][j])
-                    		break;
-            		}
+			if(i!=N-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{
+		        		if(board[i][j] != board[i+l_k][j])
+		            		break;
+		    		}
+			}
 			down1=l_k;
 			l_k=0;
 			score1 = score1 + ((du1*du1+dd1*dd1+right1*right1+down1*down1)*100);
+			//cout<<"Score for X -->"<<score1<<endl;
 			}
 			else if(board[i][j] == 'O')
 			{
 			int du2=0,dd2=0,down2=0,right2=0;
 			int l_k = 0;
 			//diagonally upwards
-			for(;l_k < k; l_k++)
+			if(i!=0 && j !=M-1)
 			{
-				if(board[i][j] != board[i-l_k][j+l_k])
-				break;
+				
+				for(;l_k < k; l_k++)
+				{	if(i-l_k > 0 && j+l_k < M)
+					if(board[i][j] != board[i-l_k][j+l_k])
+					break;
+				}
 			}
 			du2=l_k;
 			l_k=0;
 			//rightside
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i][j + l_k])
-                    		break;
-            		}
+			if(j!=M-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{
+		        		if(board[i][j] != board[i][j + l_k])
+		            		break;
+		    		}
+			}
 			right2=l_k;
 			l_k=0;
 			//diagonally downwards
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i+l_k][j + l_k])
-                    		break;
-            		}
+			if(i!=N-1 && j != M-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{	if(i+l_k < N && j+l_k < M)
+		        		if(board[i][j] != board[i+l_k][j + l_k])
+		            		break;
+		    		}
+			}
 			dd2=l_k;
 			l_k=0;
 			//downwards
-			for(;l_k < k; l_k++)
-            		{
-                		if(board[i][j] != board[i+l_k][j])
-                    		break;
-            		}
+			if(i!=N-1)
+			{
+				for(;l_k < k; l_k++)
+		    		{
+		        		if(board[i][j] != board[i+l_k][j])
+		            		break;
+		    		}
+			}
 			down2=l_k;
 			l_k=0;
 			score2 = score2 + ((du2*du2+dd2*dd2+right2*right2+down2*down2)*100);
+			//cout<<"Score for 'O' -->"<<score2<<endl;
 			}
-	
+
 		}
 	}	
 	eval_score = (score1 - score2)/(4*K);
@@ -123,6 +151,4 @@ a.push_back("......");
 	cout<<"Eval function-->"<<x<<endl;
 	return 0;
 }
-
-
 
