@@ -14,19 +14,19 @@ using namespace std;
 int N, M, K, player;
 vector<string> board;
 
-double eval(vector<string> board)
-{	int i=0,j=0;
-	double score1 = 0,score2=0, eval_score=0;
-	int k=K;
-	for(i=0;i<N;i++)
+double player1 (vector<string> board, int turn){
+	int i=0,j=0;
+	int k= K;
+	double score=0;
+	for (i=0;i<N;i++)
 	{
-		for(j=0;j<M;j++)
+		for (j=0;j<M;j++)
 		{
 			if(board[i][j] == '.')
 			continue;
 			else if(board[i][j] == 'X')
 			{
-			int du1=0,dd1=0,down1=0,right1=0;
+			int du=0,dd=0,down=0,right=0;
 			int l_k = 0;
 			//diagonally upwards
 			if(i!=0 && j!=M-1)
@@ -38,7 +38,15 @@ double eval(vector<string> board)
 					break;
 				}
 			}
-			du1=l_k;
+			if(l_k == K)
+				du = 1000;
+			else if (l_k == K-1 && turn ==1)
+				du = 1000;
+			else if (l_k == K-1 && turn ==2)
+				du = 100;
+			else if (l_k == K-2)
+				du == 10;
+			else du == l_k;
 			l_k=0;
 			//rightside
 			if(j!=M-1)
@@ -49,7 +57,16 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			right1=l_k;
+			cout<<"lk"<<l_k<<endl;
+			if(l_k == K)
+				right = 1000;
+			else if (l_k == K-1 && turn ==1)
+				right = 1000;
+			else if (l_k == K-1 && turn ==2)
+				right=100;
+			else if (l_k == K-2)
+				right == 10;
+			else right == l_k;
 			l_k=0;
 			//diagonally downwards
 			if(i!=N-1 && j != M-1)
@@ -60,7 +77,15 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			dd1=l_k;
+			if(l_k == K)
+				dd = 1000;
+			else if (l_k == K-1 && turn == 1)
+				dd = 1000;
+			else if(l_k == K-1 && turn == 2)
+				dd=100;
+			else if (l_k == K-2)
+				dd == 10;
+			else dd == l_k;
 			l_k=0;
 			//downwards
 			if(i!=N-1)
@@ -71,17 +96,42 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			down1=l_k;
+			if(l_k == K)
+				down = 1000;
+			else if (l_k == K-1 && turn == 1)
+				down = 1000;
+			else if (l_k == K-1 && turn ==2)
+				down = 100;
+			else if (l_k == K-2)
+				down == 10;
+			else down == l_k;
 			l_k=0;
-			score1 = score1 + ((du1*du1+dd1*dd1+right1*right1+down1*down1)*100);
-			//cout<<"Score for X -->"<<score1<<endl;
+			score = score + du+dd+right+down;
+			cout<<"score of p1------->"<<score<<endl;
 			}
+			cout<<"score of p1P1P1P1P1P1------->"<<score<<endl;
+		}		
+	}
+	return score;
+}
+
+double player2 (vector<string> board, int turn){
+	int i=0,j=0;
+	double score=0;
+	int k= K;
+	
+	for (i=0;i<N;i++)
+	{
+		for (j=0;j<M;j++)
+		{
+			if(board[i][j] == '.')
+			continue;
 			else if(board[i][j] == 'O')
 			{
-			int du2=0,dd2=0,down2=0,right2=0;
+			int du=0,dd=0,down=0,right=0;
 			int l_k = 0;
 			//diagonally upwards
-			if(i!=0 && j !=M-1)
+			if(i!=0 && j!=M-1)
 			{
 				
 				for(;l_k < k; l_k++)
@@ -90,7 +140,16 @@ double eval(vector<string> board)
 					break;
 				}
 			}
-			du2=l_k;
+			if(l_k == K)
+				du = 1000;
+			else if(l_k== K-1 && turn ==1)
+				du = 1000;
+			else if (l_k == K-1 && turn ==2)
+				du = 100;
+			else if (l_k == K-2)
+				du == 10;
+			else du == l_k;
+			
 			l_k=0;
 			//rightside
 			if(j!=M-1)
@@ -101,7 +160,16 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			right2=l_k;
+			if(l_k == K-1)
+				right = 1000;
+			else if(l_k== K-1 && turn ==1)
+				right = 1000;
+			else if (l_k == K-1 && turn ==2)
+				right = 100;
+			else if (l_k == K-3)
+				right == 10;
+			else right == l_k;
+
 			l_k=0;
 			//diagonally downwards
 			if(i!=N-1 && j != M-1)
@@ -112,7 +180,15 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			dd2=l_k;
+			if(l_k == K-1)
+				dd = 1000;
+			else if(l_k== K-1 && turn ==1)
+				dd = 1000;
+			else if (l_k == K-1 && turn ==2)
+				dd = 100;
+			else if (l_k == K-3)
+				dd == 10;
+			else dd == l_k;
 			l_k=0;
 			//downwards
 			if(i!=N-1)
@@ -123,16 +199,34 @@ double eval(vector<string> board)
 		            		break;
 		    		}
 			}
-			down2=l_k;
-			l_k=0;
-			score2 = score2 + ((du2*du2+dd2*dd2+right2*right2+down2*down2)*100);
-			//cout<<"Score for 'O' -->"<<score2<<endl;
-			}
+			if(l_k == K-1)
+				down = 1000;
+			else if(l_k== K-1 && turn ==1)
+				down = 1000;
+			else if (l_k == K-1 && turn ==2)
+				down = 100;
+			else if (l_k == K-3)
+				down == 10;
+			else down == l_k;
 
+			l_k=0;
+			score = score + du+dd+right+down;
+			}
 		}
-	}	
-	eval_score = (score1 - score2)/(4*K);
-	return eval_score;
+	}
+
+	return score;
+}
+
+static double eval(vector<string> board)
+{	int turn =1;
+	double p1 = player1(board, 1);
+	cout<<"p1-->"<<p1<<endl;
+	double p2 = player2(board, 1);
+	cout<<"p2-->"<<p2<<endl;
+	double score =  p1-p2;	
+	cout<<"score of eval-->"<<score;	
+	return score;
 }
 
 int main(int argc, char *argv[])
