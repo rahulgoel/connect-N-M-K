@@ -1,0 +1,936 @@
+//Running format is: <object file> <ip of server> <port no>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <arpa/inet.h> 
+#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cstddef>
+// #include "hash_imp.h"
+/* Added Code */
+#include <time.h> 
+#include <sys/time.h> 
+#include <functional>
+/* */
+
+#define FOR(i,n) for (int i = 0; i < n; i++)
+#define PB push_back
+using namespace std;
+/* Complete the function below to print 1 integer which will be your next move 
+ */
+
+class LinkedHashEntry {
+
+private:
+
+
+      int key;
+
+      int value;
+
+      LinkedHashEntry *next;
+
+public:
+
+      LinkedHashEntry(int key, int value) {
+
+            this->key = key;
+
+            this->value = value;
+
+            this->next = NULL;
+
+      }
+
+ 
+
+      int getKey() {
+
+            return key;
+
+      }
+
+ 
+
+      int getValue() {
+
+            return value;
+
+      }
+
+ 
+
+      void setValue(int value) {
+
+            this->value = value;
+
+      }
+
+ 
+
+      LinkedHashEntry *getNext() {
+
+            return next;
+
+      }
+
+ 
+
+      void setNext(LinkedHashEntry *next) {
+
+            this->next = next;
+
+      }
+
+};
+
+ 
+
+const int TABLE_SIZE = 1280000;
+
+ 
+
+class HashMap {
+
+private:
+
+      LinkedHashEntry **table;
+
+public:
+
+      HashMap() {
+
+            table = new LinkedHashEntry*[TABLE_SIZE];
+
+            for (int i = 0; i < TABLE_SIZE; i++)
+
+                  table[i] = NULL;
+
+      }
+
+ 
+
+      int get(int key) {
+
+            int hash = (key % TABLE_SIZE);
+
+            if (table[hash] == NULL)
+
+                  return -1;
+
+            else {
+
+                  LinkedHashEntry *entry = table[hash];
+
+                  while (entry != NULL && entry->getKey() != key)
+
+                        entry = entry->getNext();
+
+                  if (entry == NULL)
+
+                        return -1;
+
+                  else
+
+                        return entry->getValue();
+
+            }
+
+      }
+
+ 
+
+      void put(int key, int value) {
+
+            int hash = (key % TABLE_SIZE);
+	    // cout<<"do we reach here:"<<hash<<"key:"<<key<<endl;
+            if (table[hash] == NULL){
+	      // cout<<"do we reach here1"<<endl; 
+                  table[hash] = new LinkedHashEntry(key, value);
+		  // cout<<"do we reach here2"<<endl;
+	    }
+	     
+            else {
+	       // cout<<"do we reach here2"<<endl;
+                  LinkedHashEntry *entry = table[hash];
+
+                  while (entry->getNext() != NULL)
+
+                        entry = entry->getNext();
+
+                  if (entry->getKey() == key)
+
+                        entry->setValue(value);
+                  else
+
+                        entry->setNext(new LinkedHashEntry(key, value));
+
+		   // cout<<"do we reach here3"<<endl;
+	    }
+
+	    
+      }
+
+
+ 
+
+      void remove(int key) {
+
+            int hash = (key % TABLE_SIZE);
+
+            if (table[hash] != NULL) {
+
+                  LinkedHashEntry *prevEntry = NULL;
+
+                  LinkedHashEntry *entry = table[hash];
+
+                  while (entry->getNext() != NULL && entry->getKey() != key) {
+
+                        prevEntry = entry;
+
+                        entry = entry->getNext();
+
+                  }
+
+                  if (entry->getKey() == key) {
+
+                        if (prevEntry == NULL) {
+
+                             LinkedHashEntry *nextEntry = entry->getNext();
+
+                             delete entry;
+
+                             table[hash] = nextEntry;
+
+                        } else {
+
+                             LinkedHashEntry *next = entry->getNext();
+
+                              delete entry;
+
+                             prevEntry->setNext(next);
+
+                        }
+
+                  }
+
+            }
+
+      }
+
+ 
+
+      ~HashMap() {
+
+            for (int i = 0; i < TABLE_SIZE; i++)
+
+                  if (table[i] != NULL) {
+
+                        LinkedHashEntry *prevEntry = NULL;
+
+                        LinkedHashEntry *entry = table[i];
+
+                        while (entry != NULL) {
+
+                             prevEntry = entry;
+
+                             entry = entry->getNext();
+
+                             delete prevEntry;
+
+                        }
+
+                  }
+
+            delete[] table;
+
+      }
+
+};
+
+int N, M, K, player;
+vector<string> board;
+int MinValue(vector<string> s, int aplha, int beta, int depth,bool player);
+int MaxValue(vector<string> s, int aplha, int beta, int depth,bool player);
+double eval(vector<string> s);
+double eval2(vector<string> s);
+int alphabeta(vector<string> s, int depth,int player);
+
+/* Added Code */
+double time_left = 0;
+/* */
+
+
+void update(int n, int player)
+{
+  cout<<"calling update for :"<<n<<endl;
+  cout<<"Before Eval value is"<<eval(board)<<endl;
+  for(int i = 0; i < N; i++)
+    {
+      
+      if(board[i][n] == '.')
+	{
+	  if(player == 1)
+	    board[i][n] = 'X';
+	  else
+	    board[i][n] = 'O';
+	  // cout<<"Now for i:"<<i<<" Eval :"<<eval(board)<<endl;
+	  return;
+	}
+    }
+  // else 
+	cout<<"INVALID UPDATE"<<endl;
+}
+vector<string>  updatestate(vector<string> board,int n,int player)
+{
+  for(int i = 0; i < N; i++)
+    {
+      if(board[i][n] == '.')
+	{
+	  if(player==1) board[i][n] = 'X';
+	  else  board[i][n] = 'O';
+	  return board;
+	    
+	}
+    }
+   cout<<"INVALID UPDATE STATE"<<endl;
+  return board;
+}
+int hashboard(vector<string> board){
+  std::hash<string> hash_fn;
+  stringstream s;
+  s.str("");
+  for(int i=0;i<board.size();i++){
+    s<<board[i];
+  }
+  return hash_fn(s.str());
+}
+bool is_state_valid(vector<string> board,int n, int player)
+{
+    // for(int i = 0; i < N; i++)
+    // {
+      if(board[N-1][n] == '.')
+	{
+	  // if(player==1) board[i][n] = 'X';
+	  // else if(player==0) board[i][n] = 'O';
+	  return true;
+	}
+      // else false;
+    // }
+    return false;
+}
+
+
+int nextMove()
+{
+
+  int temp;
+  // iSecret = temp%v.size();
+  // //cout << temp << " " << iSecret << " " << v[iSecret] << endl;
+  // update(v[iSecret]);
+  // return v[iSecret];
+  cout<<"nextmove"<<endl;
+  temp= alphabeta(board,5,player);
+  update(temp,player);
+  return temp;
+}
+void printboard(vector<string> s){
+  for( int i=0;i< N;i++){
+    for (int j=0;j<M;j++){
+      cout<<s[i][j]<<" ";
+    }
+    cout<<endl;
+  }
+}
+ HashMap * Hmap;
+// n m k - k together, m width, n height
+int alphabeta(vector<string> s,int depth,int player){
+  int v;vector<int> action;int minv,maxv ,maxindex,minindex;
+  Hmap = new HashMap();
+  // v=MaxValue(s,1000,-1000,depth);
+  // cout<<"this is v(max value):"<<v<<endl;
+  printboard(s);
+  for(int i=0;i< M;i++){
+  
+    if(s[N-1][i] != '.'){
+      if(player==1)
+	action.PB(-1000000);
+      else 
+	action.PB(1000000);
+      continue;
+    }
+    if(!is_state_valid(s,i,player))continue;
+    if(player==1)
+      {
+	minv=MinValue(updatestate(s,i,player),-10000,10000,depth,true);
+	cout<<"This is the minvalue:"<<minv<<endl;
+	action.PB(minv);
+	int maxv=-1000000;
+	for(int i=0;i< action.size();i++){
+	  // cout<<"sss:"<<action[i]<<endl;
+	  if(action[i]>maxv){
+	    maxv=action[i];
+	maxindex=i;
+	  }
+	}
+
+      }
+    else
+      {
+	maxv=MaxValue(updatestate(s,i,player),-10000,10000,depth,false);
+	cout<<"This is the maxvalue:"<<maxv<<endl;
+	action.PB(maxv);
+      
+	int minv=1000000;
+	for(int i=0;i< action.size();i++){
+	  // cout<<"sss:"<<action[i]<<endl;
+	  if(action[i]<minv){
+	    minv=action[i];
+	    minindex=i;
+	  }
+	}
+      }
+  }
+  // delete Hmap;
+  if(player==1){
+    cout<<"the value we are retirning is:"<<maxindex <<endl;
+    return maxindex;
+  }
+  else{
+    return  minindex;
+    cout<<"the value we are retirning is:"<<maxindex <<endl;
+  }
+}
+int MaxValue(vector<string> s, int alpha, int beta, int depth,bool player){
+  // cout<<"MaxVal wih:" <<alpha<<"beta:"<<beta<<" depth"<<depth<<endl;
+  if(depth<=0) return eval(s);
+  int v;
+  v=-100000;
+  for(int i=0;i<M;i++){
+    if(!is_state_valid(s,i,1))continue;
+    // cout<<"state seemed valid"<<endl;
+    v= max(v,MinValue(updatestate(s,i,!player),alpha,beta,depth-1,!player));
+    if(v>= beta) 
+      return v;
+    alpha=max(alpha,v);
+  }
+  // cout<<"returning  v from max"<<v<<endl;
+  return v;
+}
+
+int MinValue(vector<string> s, int alpha, int beta, int depth,bool player){
+  // cout<<"MinVal wih:" <<alpha<<"beta:"<<beta<<"depth"<<depth<<endl;
+  if(depth<=0) return eval(s);
+  int v;
+  v=100000;
+  for(int i=0;i<M;i++){
+    if(!is_state_valid(s,i,0))continue;
+    v= min(v,MaxValue(updatestate(s,i,!player),alpha,beta,depth-1,!player));
+    if(v<= alpha) 
+      return v;
+    beta=min(beta,v);
+  }
+   // cout<<"returning  v from min"<<v<<endl;
+  return v;
+}
+
+double player1 (vector<string> board, int turn){
+  int i=0,j=0;
+  int k= K;
+  double score=0;
+  for (i=0;i<N;i++)
+    {
+      for (j=0;j<M;j++)
+	{
+	  if(board[i][j] == '.')
+	    continue;
+	  else if(board[i][j] == 'X')
+	    {
+	      int du=0,dd=0,down=0,right=0;
+	      int l_k = 0;
+	      //diagonally upwards
+	      if(i!=0 && j!=M-1)
+		{
+
+		  for(;l_k < k; l_k++)
+		    {	if(i-l_k > 0 && j+l_k < M)
+			if(board[i][j] != board[i-l_k][j+l_k])
+			  break;
+		    }
+		}
+	      if(l_k == K)
+		du = 1000;
+	      else if (l_k == K-1 && turn ==1)
+		du = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		du = 100;
+	      else if (l_k == K-2)
+		du == 10;
+	      else du == l_k;
+	      l_k=0;
+	      //rightside
+	      if(j!=M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(j+l_k < M)
+			if(board[i][j] != board[i][j + l_k])
+			  break;
+		    }
+		}
+	      // cout<<"lk"<<l_k<<endl;
+	      if(l_k == K)
+		right = 1000;
+	      else if (l_k == K-1 && turn ==1)
+		right = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		right=100;
+	      else if (l_k == K-2)
+		right == 10;
+	      else right == l_k;
+	      l_k=0;
+	      //diagonally downwards
+	      if(i!=N-1 && j != M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N && j+l_k < M)
+			if(board[i][j] != board[i+l_k][j + l_k])
+			  break;
+		    }
+		}
+	      if(l_k == K)
+		dd = 1000;
+	      else if (l_k == K-1 && turn == 1)
+		dd = 1000;
+	      else if(l_k == K-1 && turn == 2)
+		dd=100;
+	      else if (l_k == K-2)
+		dd == 10;
+	      else dd == l_k;
+	      l_k=0;
+	      //downwards
+	      if(i!=N-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N)
+			if(board[i][j] != board[i+l_k][j])
+			  break;
+		    }
+		}
+	      if(l_k == K)
+		down = 1000;
+	      else if (l_k == K-1 && turn == 1)
+		down = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		down = 100;
+	      else if (l_k == K-2)
+		down == 10;
+	      else down == l_k;
+	      l_k=0;
+	      score = score + du+dd+right+down;
+	      // cout<<"score of p1------->"<<score<<endl;
+	    }
+	  // cout<<"score of p1P1P1P1P1P1------->"<<score<<endl;
+	}	
+    }
+  return score;
+}
+
+double player2 (vector<string> board, int turn){
+  int i=0,j=0;
+  double score=0;
+  int k= K;
+
+  for (i=0;i<N;i++)
+    {
+      for (j=0;j<M;j++)
+	{
+	  if(board[i][j] == '.')
+	    continue;
+	  else if(board[i][j] == 'O')
+	    {
+	      int du=0,dd=0,down=0,right=0;
+	      int l_k = 0;
+	      //diagonally upwards
+	      if(i!=0 && j!=M-1)
+		{
+
+		  for(;l_k < k; l_k++)
+		    {	if(i-l_k > 0 && j+l_k < M)
+			if(board[i][j] != board[i-l_k][j+l_k])
+			  break;
+		    }
+		}
+	      if(l_k == K)
+		du = 1000;
+	      else if(l_k== K-1 && turn ==1)
+		du = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		du = 100;
+	      else if (l_k == K-2)
+		du == 10;
+	      else du == l_k;
+
+	      l_k=0;
+	      //rightside
+	      if(j!=M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(j+l_k < M)
+			if(board[i][j] != board[i][j + l_k])
+			  break;
+		    }
+		}
+	      if(l_k == K-1)
+		right = 1000;
+	      else if(l_k== K-1 && turn ==1)
+		right = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		right = 100;
+	      else if (l_k == K-3)
+		right == 10;
+	      else right == l_k;
+
+	      l_k=0;
+	      //diagonally downwards
+	      if(i!=N-1 && j != M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N && j+l_k < M)
+			if(board[i][j] != board[i+l_k][j + l_k])
+			  break;
+		    }
+		}
+	      if(l_k == K-1)
+		dd = 1000;
+	      else if(l_k== K-1 && turn ==1)
+		dd = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		dd = 100;
+	      else if (l_k == K-3)
+		dd == 10;
+	      else dd == l_k;
+	      l_k=0;
+	      //downwards
+	      if(i!=N-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N)
+			if(board[i][j] != board[i+l_k][j])
+			  break;
+		    }
+		}
+	      if(l_k == K-1)
+		down = 1000;
+	      else if(l_k== K-1 && turn ==1)
+		down = 1000;
+	      else if (l_k == K-1 && turn ==2)
+		down = 100;
+	      else if (l_k == K-3)
+		down == 10;
+	      else down == l_k;
+
+	      l_k=0;
+	      score = score + du+dd+right+down;
+	    }
+	}
+    }
+
+  return score;
+}
+
+double eval(vector<string> board)
+{
+  int hashV=abs(hashboard(board));
+  int hashVal;
+  // cout<<"Found Something in Hash2"<<hashV<<endl;
+  if(Hmap!=NULL)
+    hashVal=Hmap->get(hashV);
+  // cout<<"Found Something in Hash"<<endl;
+  if(hashVal!=-1){
+    
+    return hashVal;
+  }
+
+  int turn =1;
+  double p1 = player1(board, 1);
+  // cout<<"p1-->"<<p1<<endl;
+  double p2 = player2(board, 1);
+  // cout<<"p2-->"<<p2<<endl;
+  double s1= eval2(board);
+  // cout<<"s1:"<<s1;
+  double score = p1-p2+0.4*s1;	
+  score=score/10;
+  Hmap->put(hashV,score);
+  return score;
+}
+
+double eval2(vector<string> board)
+{
+  int i=0,j=0;
+  double score1 = 0,score2=0, eval_score=0;
+  int k=K;
+  for(i=0;i<N;i++)
+    {
+      for(j=0;j<M;j++)
+	{
+	  if(board[i][j] == '.')
+	    continue;
+	  else if(board[i][j] == 'X')
+	    {
+	      int du1=0,dd1=0,down1=0,right1=0;
+	      int l_k = 0;
+	      //diagonally upwards
+	      if(i!=0 && j!=M-1)
+		{
+
+		  for(;l_k < k; l_k++)
+		    {	if(i-l_k > 0 && j+l_k < M)
+			if(board[i][j] != board[i-l_k][j+l_k])
+			  break;
+		    }
+		}
+	      du1=l_k;
+	      l_k=0;
+	      //rightside
+	      if(j!=M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(j+l_k < M)
+			if(board[i][j] != board[i][j + l_k])
+			  break;
+		    }
+		}
+	      right1=l_k;
+	      l_k=0;
+	      //diagonally downwards
+	      if(i!=N-1 && j != M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N && j+l_k < M)
+			if(board[i][j] != board[i+l_k][j + l_k])
+			  break;
+		    }
+		}
+	      dd1=l_k;
+	      l_k=0;
+	      //downwards
+	      if(i!=N-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N)
+			if(board[i][j] != board[i+l_k][j])
+			  break;
+		    }
+		}
+	      down1=l_k;
+	      l_k=0;
+	      score1 = score1 + ((du1*du1+dd1*dd1+right1*right1+down1*down1)*100);
+	      //cout<<"Score for X -->"<<score1<<endl;
+	    }
+	  else if(board[i][j] == 'O')
+	    {
+	      int du2=0,dd2=0,down2=0,right2=0;
+	      int l_k = 0;
+	      //diagonally upwards
+	      if(i!=0 && j !=M-1)
+		{
+
+		  for(;l_k < k; l_k++)
+		    {	if(i-l_k > 0 && j+l_k < M)
+			if(board[i][j] != board[i-l_k][j+l_k])
+			  break;
+		    }
+		}
+	      du2=l_k;
+	      l_k=0;
+	      //rightside
+	      if(j!=M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(j+l_k < M)
+			if(board[i][j] != board[i][j + l_k])
+			  break;
+		    }
+		}
+	      right2=l_k;
+	      l_k=0;
+	      //diagonally downwards
+	      if(i!=N-1 && j != M-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N && j+l_k < M)
+			if(board[i][j] != board[i+l_k][j + l_k])
+			  break;
+		    }
+		}
+	      dd2=l_k;
+	      l_k=0;
+	      //downwards
+	      if(i!=N-1)
+		{
+		  for(;l_k < k; l_k++)
+		    {	if(i+l_k < N)
+			if(board[i][j] != board[i+l_k][j])
+			  break;
+		    }
+		}
+	      down2=l_k;
+	      l_k=0;
+	      score2 = score2 + ((du2*du2+dd2*dd2+right2*right2+down2*down2)*100);
+	      //cout<<"Score for 'O' -->"<<score2<<endl;
+	    }
+
+	}
+    }	
+  eval_score = (score1 - score2)/(4*K);
+  // printboard(board);
+  return eval_score;
+}
+
+
+
+int main(int argc, char *argv[])
+{
+  srand (time(NULL));
+  int sockfd = 0, n = 0;
+  char recvBuff[1024];
+  char sendBuff[1025];
+  struct sockaddr_in serv_addr; 
+
+  if(argc != 3)
+    {
+      printf("\n Usage: %s <ip of server> <port no> \n",argv[0]);
+      return 1;
+    } 
+
+    
+  if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+      printf("\n Error : Could not create socket \n");
+      return 1;
+    } 
+
+  memset(&serv_addr, '0', sizeof(serv_addr)); 
+
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(atoi(argv[2])); 
+
+  if(inet_pton(AF_INET, argv[1], &serv_addr.sin_addr)<=0)
+    {
+      printf("\n inet_pton error occured\n");
+      return 1;
+    } 
+
+  if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+      printf("\n Error : Connect Failed \n");
+      return 1;
+    } 
+
+  cout<<"Connect(N,M,K) will start"<<endl;
+
+  memset(recvBuff, '0',sizeof(recvBuff));
+  n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+  recvBuff[n] = 0;
+  sscanf(recvBuff, "%d", &N);
+
+  cout<<"N: "<<N<<endl;
+  memset(recvBuff, '0',sizeof(recvBuff));
+  n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+  recvBuff[n] = 0;
+  sscanf(recvBuff, "%d", &M);
+
+  cout<<"M: "<<M<<endl;
+  memset(recvBuff, '0',sizeof(recvBuff));
+  n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+  recvBuff[n] = 0;
+  sscanf(recvBuff, "%d", &K);    
+    
+  cout<<"K: "<<K<<endl;
+
+  /* Added code */
+  int TL;
+  memset(recvBuff, '0',sizeof(recvBuff));
+  n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+  recvBuff[n] = 0;
+  sscanf(recvBuff, "%d", &TL);    
+    
+  cout<<"Time Limit: "<<TL<<endl;    
+  time_left = TL;
+
+  /* */
+
+  memset(recvBuff, '0',sizeof(recvBuff));
+  n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+  recvBuff[n] = 0;
+  sscanf(recvBuff, "%d", &player);  
+
+  cout<<"Player "<<player<<endl;
+
+  string temp = "";
+  for(int j = 0; j< M; j++)
+    temp += ".";
+  FOR(i, N)
+    board.PB(temp);
+  
+  if(player == 1)
+    {
+      //cout << "hello" << endl;
+      memset(sendBuff, '0', sizeof(sendBuff)); 
+      int temp = nextMove();
+      //cout << "temp" << endl;
+      snprintf(sendBuff, sizeof(sendBuff), "%d", temp);
+      write(sockfd, sendBuff, strlen(sendBuff));
+    }
+  // printboard(board);
+  while(1)
+    {
+      int nextColumn;
+      
+      memset(recvBuff, '0',sizeof(recvBuff));
+      n = read(sockfd, recvBuff, sizeof(recvBuff)-1);
+      
+      /* Added Code */
+      struct timeval  tv1, tv2;
+      gettimeofday(&tv1, NULL);
+      /* */
+
+      recvBuff[n] = 0;
+        
+      sscanf(recvBuff, "%d", &nextColumn);
+      cout << "Rec: "<< nextColumn << endl;
+      if(player == 1)
+	update(nextColumn, 2);
+      else {
+	cout<<"debuffing segfault"<<nextColumn<<endl;
+	update(nextColumn, 1);
+      }
+      cout << nextColumn << endl;
+      
+      memset(sendBuff, '0', sizeof(sendBuff)); 
+      int temp = nextMove();
+      //cout << "temp" << endl;
+      snprintf(sendBuff, sizeof(sendBuff), "%d", temp);
+      
+      /** Added Code */
+      gettimeofday(&tv2, NULL);
+      double time_spent = (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec);
+      time_left -= time_spent;
+      /* */
+
+      write(sockfd, sendBuff, strlen(sendBuff));
+    }
+
+  return 0;
+}
+
+
+
