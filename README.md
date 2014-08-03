@@ -2,8 +2,11 @@ connect-N-M-K
 =============
 
 AI player for generalized connect 4
+
 The question statement:
-Random walk player, with mininax and alpha beta pruning implemented as a solution.
+Random walk player, with mininax and alpha beta pruning implemented as a solution.Implements hashmap to save time and ignore redundant solutions.
+
+
 Server .cpp is the server which takes 2 bots 
 The server compilation that you would be given would be able to run as ./server <portno>
 <total_time_for_each_player> <N> <M> <K> <mode>. After this you can do a “sudo netstat -ntlp” to check if the
